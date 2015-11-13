@@ -1,9 +1,11 @@
-﻿ul {list-style:none}
+﻿ul {
+ list-style: none;
+ margin-left: 0;
+ padding-left: 2em;
+ }
 .clickable { cursor:pointer}
 .attention {color:red;}
 
-.centered {
-  position: fixed; /* or absolute */
-  top: 48%;
-  left: 45%;
+li{
+    margin-left:0px;
 }
