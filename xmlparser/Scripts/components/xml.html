@@ -21,7 +21,7 @@
                     <span class='xml-attribute-value'>{{nodeValue}}</span>
                     
                 {{/if}}
-                {{#if:nodeType!=2 && childNodes.length==1 && childNodes[0].nodeType==3}}
+                {{#if:nodeType!=2 && childNodes.length==1 && childNodes[0].nodeType==3}}yy
                     {{#with:childNodes[0]}}
                         {{#addXpath:$data}}
                             {{#component: {name:$parents[1].display, params:$data}/}}
@@ -29,17 +29,19 @@
                     {{/with}}
                 {{/if}}
                 {{#if:$toggled}}
-                    {{#ifnot:nodeType!=2 && childNodes.length==1 && childNodes[0].nodeType==3}}
-                        <ul>
-                            {{#foreach:childNodes}}
-                                <li>
-                                    {{#addXpath:$data}}
-                                        {{#component:{name:'xml', params:{data:$data, display:$parents[1].display}}/}}
-                                    {{/addXpath}}
-                                </li>
-                            {{/foreach}}
-                        </ul>
-                    {{/ifnot}}
+                    {{#if:nodeType!=2}}
+                        {{#ifnot: childNodes.length==1 && childNodes[0].nodeType==3}}
+                            <ul>
+                                {{#foreach:childNodes}}
+                                    <li>
+                                        {{#addXpath:$data}}
+                                            {{#component:{name:'xml', params:{data:$data, display:$parents[1].display}}/}}
+                                        {{/addXpath}}
+                                    </li>
+                                {{/foreach}}
+                            </ul>
+                        {{/ifnot}}
+                    {{/if}}
                     {{#if:nodeType==1}}
                         &lt;/<span class="xml-element-name">{{nodeName}}</span>&gt;
                     {{/if}}
