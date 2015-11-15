@@ -21,7 +21,7 @@
                     <span class='xml-attribute-value'>{{nodeValue}}</span>
                     
                 {{/if}}
-                {{#if:nodeType!=2 && childNodes.length==1 && childNodes[0].nodeType==3}}yy
+                {{#if:nodeType!=2 && childNodes.length==1 && childNodes[0].nodeType==3}}
                     {{#with:childNodes[0]}}
                         {{#addXpath:$data}}
                             {{#component: {name:$parents[1].display, params:$data}/}}
