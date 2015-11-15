@@ -41,9 +41,13 @@
                                 {{#with:$xpathError}}
                                     <div class="attention">{{$data}}</div>
                                 {{/with}}
-                                {{#foreach:$xpath}} 
-                                    {{#component:{name:'xml', params:{data:$data, display:'xnode-display'}}/}}
-                                {{/forreach}}
+                                <ul>
+                                    {{#foreach:$xpath}} 
+                                        <li>
+                                            {{#component:{name:'xml', params:{data:$data, display:'xnode-display'}}/}}
+                                        </li>
+                                    {{/forreach}}
+                                </ul>
                             {{/xpath}}
                         </div>
                     </div>

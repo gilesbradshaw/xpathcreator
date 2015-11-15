@@ -1,27 +1,46 @@
 ﻿{{#with:params}}
     {{#with:data}}
         {{#ifnot:(typeof $data)==='string'}}
-            {{#if:nodeType==1}}
-                {{#component: {name:$parent.display, params:$data}/}}
-                {{#foreach:attributes}}
-                    {{#component: {name:$parents[1].display, params:$data}/}}
-                {{/foreach}}&gt;
-            {{/if}}
-            {{#if:nodeType==3}}
-                {{#component: {name:$parent.display, params:$data}/}}
-            {{/if}}
-            <ul>
-                {{#foreach:childNodes}}
-                    <li>
+            {{#toggler}}
+                {{#if:nodeType==1}}
+                    {{#ifnot:childNodes.length==1 && childNodes[0].nodeType==3}}
+                        <span class="clickable" click="{{$toggle}}">
+                            {{#if:$toggled}}-{{/if}}
+                            {{#ifnot:$toggled}}+{{/ifnot}}
+                        </span>
+                    {{/ifnot}}
+                    {{#component: {name:$parent.display, params:$data}/}}
+                    {{#foreach:attributes}}
+                        {{#component: {name:$parents[1].display, params:$data}/}}
+                    {{/foreach}}&gt;
+                {{/if}}
+                {{#if:nodeType==3}}
+                    {{#component: {name:$parent.display, params:$data}/}}
+                {{/if}}
+                {{#if:childNodes.length==1 && childNodes[0].nodeType==3}}
+                    {{#with:childNodes[0]}}
                         {{#addXpath:$data}}
-                            {{#component:{name:'xml', params:{data:$data, display:$parents[1].display}}/}}
+                            {{#component: {name:$parents[1].display, params:$data}/}}
                         {{/addXpath}}
-                    </li>
-                {{/foreach}}
-            </ul>
-            {{#if:nodeType==1}}
-                &lt;/<span class="xml-element-name">{{nodeName}}</span>&gt;
-            {{/if}}
+                    {{/with}}
+                {{/if}}
+                {{#if:$toggled}}
+                    {{#ifnot:childNodes.length==1 && childNodes[0].nodeType==3}}
+                        <ul>
+                            {{#foreach:childNodes}}
+                                <li>
+                                    {{#addXpath:$data}}
+                                        {{#component:{name:'xml', params:{data:$data, display:$parents[1].display}}/}}
+                                    {{/addXpath}}
+                                </li>
+                            {{/foreach}}
+                        </ul>
+                    {{/ifnot}}
+                    {{#if:nodeType==1}}
+                        &lt;/<span class="xml-element-name">{{nodeName}}</span>&gt;
+                    {{/if}}
+                {{/if}}
+            {{/toggler}}
         {{/ifnot}}
     {{/with}}
 {{/with}}

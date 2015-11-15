@@ -117,5 +117,26 @@
         }
     };
 
+    ko.virtualElements.allowedBindings.toggler = true;
+    ko.bindingHandlers.toggler = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            var toggled=ko.observable(true)
+            var innerBindingContext = bindingContext.extend(
+                {
+                    $toggled:toggled,
+                    $toggle: function () {
+                        toggled(!toggled());
+                    }
+                }
+            );
+            ko.applyBindingsToDescendants(innerBindingContext, element);
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            return { controlsDescendantBindings: true };
+        }
+    };
+
+
 
 });
