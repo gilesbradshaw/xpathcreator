@@ -1,21 +1,27 @@
 ﻿{{#with:params}}
-    <li>
-        {{#if:key==="_text"}}
-            <span class="clickable" click="{{ function(){alert($xpath + '/text()')} }}">{{value}}</span>
-        {{/if}}
-        {{#if:key!=="_text"}}
-            &lt;<span class="clickable" click="{{ function(){alert($xpath + '/' + key)} }}">{{key}}</span>
-            {{#iterate:{data:value, key:key}}}
-                {{#foreach:$attributes}}
-                    <span class="clickable" click="{{ function(){alert($xpath + '/@' + key)} }}">{{key}}=&quot;{{value}}&quot;</span>
+    {{#with:data}}
+        {{#ifnot:(typeof $data)==='string'}}
+            {{#if:nodeType==1}}
+                {{#component: {name:$parent.display, params:$data}/}}
+                {{#foreach:attributes}}
+                    {{#component: {name:$parents[1].display, params:$data}/}}
                 {{/foreach}}&gt;
-                <ul>
-                    {{#foreach:$iterate}}
-                        {{#component: {name:'xml', params:$data}/}}
-                    {{/foreach}}
-                </ul>
-            {{/iterate}}
-    &lt;/{{key}}&gt;
-    {{/if}}
-    </li>
+            {{/if}}
+            {{#if:nodeType==3}}
+                {{#component: {name:$parent.display, params:$data}/}}
+            {{/if}}
+            <ul>
+                {{#foreach:childNodes}}
+                    <li>
+                        {{#addXpath:$data}}
+                            {{#component:{name:'xml', params:{data:$data, display:$parents[1].display}}/}}
+                        {{/addXpath}}
+                    </li>
+                {{/foreach}}
+            </ul>
+            {{#if:nodeType==1}}
+                &lt;/<span class="xml-element-name">{{nodeName}}</span>&gt;
+            {{/if}}
+        {{/ifnot}}
+    {{/with}}
 {{/with}}

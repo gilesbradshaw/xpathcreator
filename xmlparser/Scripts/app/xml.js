@@ -1,13 +1,28 @@
-﻿define(["knockout", "xmlToJson", "linq"], function (ko, xmlToJson, linq) {
-    ko.virtualElements.allowedBindings.xmlToJson = true;
-    ko.bindingHandlers.xmlToJson = {
+﻿define(["knockout", "linq"], function (ko, linq) {
+
+    ko.virtualElements.allowedBindings.xmlDoc = true;
+    ko.bindingHandlers.xmlDoc = {
         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             // Make a modified binding context, with a extra properties, and apply it to descendant elements
             var error = ko.observable();
-            json = ko.pureComputed(function () {
+            xmlDoc = ko.pureComputed(function () {
                 try {
+                    var ret;
                     error(undefined);
-                    return xmlToJson.parseString(ko.utils.unwrapObservable(valueAccessor()));
+                    if (window.DOMParser) {
+
+                        var parser = new DOMParser();
+                        ret = parser.parseFromString(ko.utils.unwrapObservable(valueAccessor()), "text/xml");
+
+                        return ret;
+                    } else {
+                        ret = new ActiveXObject("Microsoft.XMLDOM");
+                        ret.async = false;
+                        ret.loadXML(ko.utils.unwrapObservable(valueAccessor()));
+
+                        return ret;
+                    }
+                    
                 } catch (ex) {
                     error(ex);
                     return {};
@@ -16,9 +31,8 @@
 
             var innerBindingContext = bindingContext.extend(
                 {
-                    $json: json,
-                    $jsonString: ko.pureComputed(function () { return JSON.stringify(json(), null, 4) }),
-                    $jsonError: error
+                    $xmlDoc: xmlDoc,
+                    $xmlDocError: error
                 }
             );
             ko.applyBindingsToDescendants(innerBindingContext, element);
@@ -28,54 +42,28 @@
         }
     };
 
-    
-
-
-    ko.virtualElements.allowedBindings.iterate = true;
-    ko.bindingHandlers.iterate = {
+    ko.virtualElements.allowedBindings.xpath = true;
+    ko.bindingHandlers.xpath = {
         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            var error = ko.observable();
+            xpath = ko.pureComputed(function () {
+                try {
+                    error(undefined);
+                    var ret = $(ko.utils.unwrapObservable(valueAccessor().xmlDoc)).xpath(ko.utils.unwrapObservable(valueAccessor().xpath), function (prefix) {
+                        return bindingContext.$xpathNamespaces ? bindingContext.$xpathNamespaces[prefix] : undefined
+                    });
+                    return ret;
+                } catch (ex) {
+                    error(ex);
+                    return undefined;
+                }
+            });
+
             var innerBindingContext = bindingContext.extend(
                 {
-                    $xpath: ko.utils.unwrapObservable(valueAccessor().key) ?  (bindingContext.$xpath || '') + '/' + ko.utils.unwrapObservable(valueAccessor().key) : '',
-                    $iterate: ko.pureComputed(function () {
-                        var value = ko.utils.unwrapObservable(valueAccessor().data);
-                        return linq.From(value)
-                            .SelectMany(function (v) {
-                                return Object.keys(v)
-                                    .filter(
-                                        function (key) {
-                                            return key !== "_attr";
-                                        }
-                                    )
-                                    .map(
-                                        function (key) {
-                                            return {
-                                                key: key,
-                                                value: v[key],
-                                                
-                                            }
-                                        }
-                                    )
-                            }
-                        ).ToArray()
-                    }),
-                    $attributes: ko.pureComputed(function () {
-                        var value = ko.utils.unwrapObservable(valueAccessor().data);
-                        return linq.From(value)
-                            .Where(function (v) {
-                                return Object.keys(v).length && Object.keys(v)[0] === "_attr"
-                            })
-                            .SelectMany(function (attrs) {
-                                return Object.keys(attrs._attr).map(function (key) {
-                                    return {
-                                        key: key,
-                                        value: attrs._attr[key]._value
-                                    }
-                                })
-
-                            }).ToArray()
-                    })
+                    $xpath: xpath,
+                    $xpathError: error
                 }
             );
             ko.applyBindingsToDescendants(innerBindingContext, element);
@@ -84,5 +72,50 @@
             return { controlsDescendantBindings: true };
         }
     };
+
+    ko.virtualElements.allowedBindings.addXpath = true;
+    ko.bindingHandlers.addXpath = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            
+            
+            linq.From(valueAccessor().attributes)
+                .Where(function (attr) {
+                    return attr.namespaceURI === "http://www.w3.org/2000/xmlns/"
+                })
+                .ToArray()
+                .map(function (attr) {
+                    bindingContext.$xpathNamespaces[attr.localName] = attr.nodeValue;
+                });
+            var innerBindingContext = bindingContext.extend(
+                {
+                    $xpathToHere: (bindingContext.$xpathToHere || '') + (valueAccessor().nodeType === 1 ? '/' + valueAccessor().nodeName : '')
+                }
+            );
+            ko.applyBindingsToDescendants(innerBindingContext, element);
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            return { controlsDescendantBindings: true };
+        }
+    };
+
+    ko.virtualElements.allowedBindings.xpathDestination = true;
+    ko.bindingHandlers.xpathDestination = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+
+            var innerBindingContext = bindingContext.extend(
+                {
+                    $xpathDestination: valueAccessor(),
+                    $xpathNamespaces: {}
+                }
+            );
+            ko.applyBindingsToDescendants(innerBindingContext, element);
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            return { controlsDescendantBindings: true };
+        }
+    };
+
 
 });

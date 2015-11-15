@@ -4,15 +4,18 @@
         jquery: 'jquery-2.1.4.min',
         knockout: 'knockout-3.3.0',
         punches: "knockout.punches.min",
-        xmlToJson: "xmlToJson",
         linq: "linq.amd",
-
+        xpath:"jquery.xpath",
         "ko-xml": "app/xml"
 
+    },
+    "shim": {
+        "xpath": ["jquery"]
     }
+
 });
 
-require(["jquery", "knockout", "punches", "ko-xml"], function ($, ko) {
+require(["jquery", "knockout","linq", "punches", "ko-xml", "xpath"], function ($, ko, linq) {
 
     function SomeComponentViewModel(params) {
         // 'params' is an object whose key/value pairs are the parameters
@@ -20,20 +23,25 @@ require(["jquery", "knockout", "punches", "ko-xml"], function ($, ko) {
         this.params = params;
     }
  
-    
-    
-
     ko.components.register('xml', {
         template: { require: 'text!components/xml.html' },
         viewModel: SomeComponentViewModel
     });
-
+    ko.components.register('xpath-picker', {
+        template: { require: 'text!components/xpath-picker.html' },
+        viewModel: SomeComponentViewModel
+    });
+    ko.components.register('xnode-display', {
+        template: { require: 'text!components/xnode-display.html' },
+        viewModel: SomeComponentViewModel
+    });
 
 
     ko.punches.enableAll();
     var viewModel = {
-        xml: ko.observable('<xml hello="oh" goodbye="ah">xml text  <morexml>some more text <and>some <and>some <and>some more<and>some more<and>some more</and></and></and> more</and> more</and></morexml><evenmorexml>some more text</evenmorexml> and some text hee</xml>')
+        xpath:ko.observable('/xml'),
+        xml: ko.observable('<xml xmlns:oh="giles" hello="oh" goodbye="ah">xml text  <oh:morexml>some more text <and>some <and>some <and>some more<and>some more<and>some more</and></and></and> more</and> more</and></oh:morexml><evenmorexml>some more text</evenmorexml> and some text hee</xml>')
     };
-    setTimeout(function () { ko.applyBindings(viewModel); }, 1000);
+    ko.applyBindings(viewModel);
     
 });
