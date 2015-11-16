@@ -1,5 +1,8 @@
 ﻿{{#with:params}}
     {{#with:data}}
+        {{#if:(typeof $data)==='string'}}
+            {{$data}}
+        {{/if}}
         {{#ifnot:(typeof $data)==='string'}}
             {{#toggler}}
                 {{#if:nodeType==1}}

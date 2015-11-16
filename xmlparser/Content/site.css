@@ -3,7 +3,6 @@
  margin-left: 0;
  padding-left: 2em;
  }
-.clickable { cursor:pointer}
 .attention {color:red;}
 
 li{
@@ -17,6 +16,9 @@ textarea {
 
     width: 100%;
 }
+
+
+.clickable { cursor:pointer}
 
 .xml-element-name {
     color:blue;

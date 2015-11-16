@@ -1,4 +1,4 @@
-﻿define(["knockout", "linq"], function (ko, linq) {
+﻿define(["knockout", "linq", "jquery", "xpath"], function (ko, linq, $) {
 
     ko.virtualElements.allowedBindings.xmlDoc = true;
     ko.bindingHandlers.xmlDoc = {
