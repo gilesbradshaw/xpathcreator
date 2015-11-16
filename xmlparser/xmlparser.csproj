@@ -58,7 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\flexboxgrid.min.css" />
+    <Content Include="error.html" />
     <Content Include="packages.config" />
+    <Content Include="divshot.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

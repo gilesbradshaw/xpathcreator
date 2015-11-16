@@ -40,8 +40,9 @@ require(["jquery", "knockout","linq", "punches", "ko-xml", "xpath"], function ($
 
     ko.punches.enableAll();
     var viewModel = {
-        xpath:ko.observable('/xml'),
-        xml: ko.observable('<xml xmlns:oh="giles" hello="oh" goodbye="ah">xml text  <oh:morexml>some more text <and>some <and>some <and>some more<and>some more<and>some more</and></and></and> more</and> more</and></oh:morexml><evenmorexml>some more text</evenmorexml> and some text hee</xml>')
+        xpath: ko.observable('/xml/oh:morexml/and/and/and/and | /xml/oh:morexml/and/text() | /xml/@goodbye'),
+        xml: ko.observable('<xml xmlns:oh="giles" hello="oh" goodbye="ah">xml text  <oh:morexml>some more text <and>some <and>some <and>some more<and>some more<and>some more</and></and></and> more</and> more</and></oh:morexml><evenmorexml>some more text</evenmorexml> and some text hee</xml>'),
+        matches:ko.observableArray()
     };
     ko.applyBindings(viewModel);
     

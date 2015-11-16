@@ -53,6 +53,10 @@
                     var ret = $(ko.utils.unwrapObservable(valueAccessor().xmlDoc)).xpath(ko.utils.unwrapObservable(valueAccessor().xpath), function (prefix) {
                         return bindingContext.$xpathNamespaces ? bindingContext.$xpathNamespaces[prefix] : undefined
                     });
+                    if (valueAccessor().matches)
+                    {
+                        valueAccessor().matches(ret);
+                    }
                     return ret;
                 } catch (ex) {
                     error(ex);
@@ -77,8 +81,6 @@
     ko.bindingHandlers.addXpath = {
         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             // Make a modified binding context, with a extra properties, and apply it to descendant elements
-            
-            
             linq.From(valueAccessor().attributes)
                 .Where(function (attr) {
                     return attr.namespaceURI === "http://www.w3.org/2000/xmlns/"
@@ -137,6 +139,25 @@
         }
     };
 
+    ko.virtualElements.allowedBindings.timed = true;
+    ko.bindingHandlers.timed = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            var timed = ko.observable()
+            setTimeout(function () {
+                timed(true);
+            }, 1000)
+            var innerBindingContext = bindingContext.extend(
+                {
+                    $timed:timed
+                }
+            );
+            ko.applyBindingsToDescendants(innerBindingContext, element);
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            return { controlsDescendantBindings: true };
+        }
+    };
 
 
 });

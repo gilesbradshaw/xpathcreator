@@ -1,11 +1,15 @@
 ﻿{{#with:params}}
-    {{#if:nodeType==1}}
-        &lt;<span class="xml-element-name clickable"  click="{{ function(){$xpathDestination($xpathToHere)} }}">{{nodeName}}</span>
-    {{/if}}
-    {{#if:nodeType==2}}
-        <span class="clickable" click="{{ function(){$xpathDestination($xpathToHere + '/@' + name)} }}"><span class='xml-attribute-name'>{{name}}</span>=&apos;<span class='xml-attribute-value'>{{nodeValue}}</span>&apos;</span>
-    {{/if}}
-    {{#if:nodeType==3}}
-        <span class="xml-text clickable" click="{{ function(){$xpathDestination($xpathToHere + '/text()')} }}">{{nodeValue}}</span>
-    {{/if}}
+    <span data-bind="css:{'xml-selected':matches.indexOf(node)>=0}">
+        {{#with:node}}
+            {{#if:nodeType==1}}
+                &lt;<span class="xml-element-name clickable"  click="{{ function(){$xpathDestination($xpathToHere)} }}">{{nodeName}}</span>
+            {{/if}}
+            {{#if:nodeType==2}}
+                <span class="clickable" click="{{ function(){$xpathDestination($xpathToHere + '/@' + name)} }}"><span class='xml-attribute-name'>{{name}}</span>=&apos;<span class='xml-attribute-value'>{{nodeValue}}</span>&apos;</span>
+            {{/if}}
+            {{#if:nodeType==3}}
+                <span class="xml-text clickable" click="{{ function(){$xpathDestination($xpathToHere + '/text()')} }}">{{nodeValue}}</span>
+            {{/if}}
+        {{/with}}
+    </span>
 {{/with}}

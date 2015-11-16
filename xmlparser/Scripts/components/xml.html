@@ -1,4 +1,5 @@
 ﻿{{#with:params}}
+    <div data-bind="css:{'xml-selected': matches.indexOf(data)>=0 }">
     {{#with:data}}
         {{#if:(typeof $data)==='string'}}
             {{$data}}
@@ -12,22 +13,21 @@
                             {{#ifnot:$toggled}}+{{/ifnot}}
                         </span>
                     {{/ifnot}}
-                    {{#component: {name:$parent.display, params:$data}/}}
+                    {{#component: {name:$parent.display, params:{node:$data, matches:$parent.matches}}/}}
                     {{#foreach:attributes}}
-                        {{#component: {name:$parents[1].display, params:$data}/}}
+                        {{#component: {name:$parents[1].display, params:{node:$data, matches:$parents[1].matches}}/}}
                     {{/foreach}}&gt;
                 {{/if}}
                 {{#if:nodeType==3}}
-                    {{#component: {name:$parent.display, params:$data}/}}
+                    {{#component: {name:$parent.display, params:{node:$data, matches:$parent.matches}}/}}
                 {{/if}}
                 {{#if:nodeType==2}}
                     <span class='xml-attribute-value'>{{nodeValue}}</span>
-                    
                 {{/if}}
                 {{#if:nodeType!=2 && childNodes.length==1 && childNodes[0].nodeType==3}}
                     {{#with:childNodes[0]}}
                         {{#addXpath:$data}}
-                            {{#component: {name:$parents[1].display, params:$data}/}}
+                            {{#component: {name:$parents[1].display, params:{node:$data, matches:$parents[1].matches}}/}}
                         {{/addXpath}}
                     {{/with}}
                 {{/if}}
@@ -38,7 +38,7 @@
                                 {{#foreach:childNodes}}
                                     <li>
                                         {{#addXpath:$data}}
-                                            {{#component:{name:'xml', params:{data:$data, display:$parents[1].display}}/}}
+                                            {{#component:{name:$parents[1].self, params:{self:$parents[1].self, data:$data, display:$parents[1].display, matches:$parents[1].matches}}/}}
                                         {{/addXpath}}
                                     </li>
                                 {{/foreach}}
@@ -52,4 +52,5 @@
             {{/toggler}}
         {{/ifnot}}
     {{/with}}
+    </div>
 {{/with}}

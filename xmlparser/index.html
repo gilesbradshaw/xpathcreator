@@ -25,7 +25,7 @@
                 <textarea rows="5" data-bind="value:xpath, valueUpdate:'input'"></textarea>
             </div>
         </div>
-            
+        {{#timed}}
             {{#xmlDoc:xml}}
                 {{#xpathDestination:xpath}}
                     <div class="row">
@@ -34,26 +34,28 @@
                                 <div class="attention">{{$data}}</div>
                             {{/with}}
                             {{#ifnot:$xmlDocError}}
-                                {{#component:{name:'xml', params:{data:$xmlDoc, display:'xpath-picker'}}/}}
+                                {{#component:{name:'xml', params:{self:'xml', data:$xmlDoc, display:'xpath-picker', matches:matches}}/}}
                             {{/ifnot}}
                         </div>
                         <div class="col-xs-12  col-sm-6">
-                            {{#xpath:{xmlDoc:$xmlDoc, xpath:xpath}}}
-                                {{#with:$xpathError}}
-                                    <div class="attention">{{$data}}</div>
-                                {{/with}}
-                                <ul>
-                                    {{#foreach:$xpath}} 
-                                        <li>
-                                            {{#component:{name:'xml', params:{data:$data, display:'xnode-display'}}/}}
-                                        </li>
-                                    {{/forreach}}
-                                </ul>
-                            {{/xpath}}
+                            {{#if:$timed}}
+                                {{#xpath:{xmlDoc:$xmlDoc, xpath:xpath, matches:matches}}}
+                                    {{#with:$xpathError}}
+                                        <div class="attention">{{$data}}</div>
+                                    {{/with}}
+                                    <ul>
+                                        {{#foreach:$xpath}} 
+                                            <li>
+                                                {{#component:{name:'xml', params:{self:'xml', data:$data, display:'xnode-display', matches:[]}}/}}
+                                            </li>
+                                        {{/forreach}}
+                                    </ul>
+                                {{/xpath}}
+                            {{/if}}
                         </div>
                     </div>
                 {{/xpathDestination}}
             {{/xmlDoc}}
-        </div>
+        {{/timed}}
     </body>
 </html>
