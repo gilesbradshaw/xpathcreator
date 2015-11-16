@@ -7,7 +7,7 @@
         {{#ifnot:(typeof $data)==='string'}}
             {{#toggler}}
                 {{#if:nodeType==1}}
-                    {{#ifnot:childNodes.length==1 && childNodes[0].nodeType==3}}
+                    {{#ifnot:childNodes.length==0 || (childNodes.length==1 && childNodes[0].nodeType==3)}}
                         <span class="clickable" click="{{$toggle}}">
                             {{#if:$toggled}}-{{/if}}
                             {{#ifnot:$toggled}}+{{/ifnot}}
@@ -16,7 +16,7 @@
                     {{#component: {name:$parent.display, params:{node:$data, matches:$parent.matches}}/}}
                     {{#foreach:attributes}}
                         {{#component: {name:$parents[1].display, params:{node:$data, matches:$parents[1].matches}}/}}
-                    {{/foreach}}&gt;
+                    {{/foreach}}{{#ifnot:childNodes.length}}/{{/ifnot}}&gt;
                 {{/if}}
                 {{#if:nodeType==3}}
                     {{#component: {name:$parent.display, params:{node:$data, matches:$parent.matches}}/}}
@@ -45,7 +45,7 @@
                             </ul>
                         {{/ifnot}}
                     {{/if}}
-                    {{#if:nodeType==1}}
+                    {{#if:nodeType==1  && childNodes.length}}
                         &lt;/<span class="xml-element-name">{{nodeName}}</span>&gt;
                     {{/if}}
                 {{/if}}
