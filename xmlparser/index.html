@@ -38,12 +38,12 @@
                                 <div class="attention">{{$data}}</div>
                             {{/with}}
                             {{#ifnot:$xmlDocError}}
-                                {{#component:{name:'xml', params:{self:'xml', data:$xmlDoc, display:'xpath-picker', matches:matches}}/}}
+                                {{#component:{name:'xml', params:{self:'xml', data:$xmlDoc, display:'xpath-picker', matches:$xmlDocMatches}}/}}
                             {{/ifnot}}
                         </div>
                         <div class="col-xs-12  col-sm-6">
                             {{#if:$timed}}
-                                {{#xpath:{xmlDoc:$xmlDoc, xpath:xpath, matches:matches}}}
+                                {{#xpath:{xmlDoc:$xmlDoc, xpath:xpath, matches:$xmlDocMatches}}}
                                     {{#with:$xpathError}}
                                         <div class="attention">{{$data}}</div>
                                     {{/with}}

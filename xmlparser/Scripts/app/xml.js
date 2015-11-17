@@ -32,7 +32,9 @@
             var innerBindingContext = bindingContext.extend(
                 {
                     $xmlDoc: xmlDoc,
-                    $xmlDocError: error
+                    $xmlDocError: error,
+                    $xmlDocMatches:ko.observableArray()
+
                 }
             );
             ko.applyBindingsToDescendants(innerBindingContext, element);

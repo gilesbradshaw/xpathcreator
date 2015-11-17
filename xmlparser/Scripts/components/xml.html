@@ -2,7 +2,7 @@
     <div data-bind="css:{'xml-selected': matches.indexOf(data)>=0 }">
     {{#with:data}}
         {{#if:(typeof $data)==='string'}}
-            <span class="plain-text">{{$data}}</span>
+            <span class="xml-plain-text">{{$data}}</span>
         {{/if}}
         {{#ifnot:(typeof $data)==='string'}}
             {{#toggler}}
